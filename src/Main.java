@@ -10,6 +10,7 @@ public class Main {
         th1.start();
         try{
             th1.join();
+            th1.setPriority(5);
             System.out.println("Main Thread is waiting for thread 1 to finish");
         }catch (Exception ex){
 
