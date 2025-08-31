@@ -8,6 +8,12 @@ public class Main {
         });
 
         th1.start();
+        try{
+            th1.join();
+            System.out.println("Main Thread is waiting for thread 1 to finish");
+        }catch (Exception ex){
+
+        }
         System.out.println("Main Thread is finishing");
     }
 }
