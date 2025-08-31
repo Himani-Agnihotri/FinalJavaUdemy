@@ -1,23 +1,34 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class SharedResource {
-    boolean itemAvailable = false;
+    private Queue<Integer> sharedBuffer;
+    private int bufferSize;
 
-    public synchronized void addItem(){
-        itemAvailable=true;
-        System.out.println("Item added by: "+ Thread.currentThread().getName());
-        notifyAll();
+    public SharedResource(int bufferSize){
+        sharedBuffer = new LinkedList<>();
+        this.bufferSize = bufferSize;
     }
 
-    public synchronized void consumeItem(){
-        System.out.println("consumeItem invoked by: "+ Thread.currentThread().getName());
-        while (!itemAvailable){
-            try {
-                System.out.println("Thead is waiting now: "+ Thread.currentThread().getName());
-                wait();
-            }catch (Exception e){
-
-            }
+    public synchronized void produce(int item) throws Exception {
+        while (sharedBuffer.size()==bufferSize){
+            System.out.println("Buffer is full");
+            wait();
         }
-        System.out.println("Item consumed by: "+ Thread.currentThread().getName());
-        itemAvailable=false;
+        sharedBuffer.add(item);
+        System.out.println("Produced "+ item);
+        notify();
     }
+    public synchronized int consume() throws Exception {
+        while (sharedBuffer.isEmpty()){
+            System.out.println("Buffer is empty");
+            wait();
+        }
+        int item = sharedBuffer.poll();
+        System.out.println("Consumed "+ item);
+        notify();
+        return item;
+    }
+
+
 }
